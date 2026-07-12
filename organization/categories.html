@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Manage asset categories and subcategories for your organization.">
+  <title>Asset Categories – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .category-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:var(--space-5); }
+    .category-card {
+      background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg);
+      padding:var(--space-6); transition:all var(--transition-base); cursor:pointer; position:relative;
+    }
+    .category-card:hover { border-color:var(--primary); transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+    .category-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--cat-color,var(--primary)); border-radius:var(--radius-lg) var(--radius-lg) 0 0; }
+    .cat-icon-wrap { width:52px;height:52px; border-radius:var(--radius-md); display:flex;align-items:center;justify-content:center; font-size:26px; margin-bottom:var(--space-4); }
+    .cat-meta { display:flex;align-items:center;gap:var(--space-3);margin-top:var(--space-3); }
+    .cat-stat { display:flex;align-items:center;gap:4px;font-size:.75rem;color:var(--text-muted); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>📁</span> Asset Categories</div>
+      <div class="topbar-actions">
+        <div class="tabs">
+          <button class="tab-btn active" id="view-grid-btn" onclick="switchView('grid')">⊞ Grid</button>
+          <button class="tab-btn" id="view-list-btn" onclick="switchView('list')">≡ List</button>
+        </div>
+        <button class="btn btn-primary" onclick="openCatModal()">＋ Add Category</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- Search/Filter bar -->
+      <div class="card" style="padding:var(--space-4) var(--space-6)">
+        <div class="toolbar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="cat-search" class="form-control" placeholder="Search categories…">
+          </div>
+          <div class="filter-chips" id="filter-chips">
+            <span class="filter-chip active" data-type="">All</span>
+            <span class="filter-chip" data-type="HARDWARE">Hardware</span>
+            <span class="filter-chip" data-type="SOFTWARE">Software</span>
+            <span class="filter-chip" data-type="FURNITURE">Furniture</span>
+            <span class="filter-chip" data-type="VEHICLE">Vehicle</span>
+            <span class="filter-chip" data-type="OTHER">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid View -->
+      <div id="cat-grid-view">
+        <div class="category-grid stagger animate-fade-up" id="cat-grid"></div>
+      </div>
+
+      <!-- List View -->
+      <div id="cat-list-view" style="display:none">
+        <div class="card animate-fade-up">
+          <div class="table-container">
+            <table class="table" id="cat-table">
+              <thead>
+                <tr>
+                  <th>Category</th><th>Type</th><th>Assets</th><th>Depreciation</th><th>Life (yrs)</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cat-tbody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="cat-pagination"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal-backdrop" id="cat-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="cat-modal-title">📁 Add Category</div>
+      <button class="modal-close" onclick="Utils.closeModal('cat-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Category Name <span class="required">*</span></label>
+          <input type="text" id="cat-name" class="form-control" placeholder="e.g. Laptops & Computers">
+          <span class="invalid-feedback" id="cat-name-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category Type <span class="required">*</span></label>
+          <select id="cat-type" class="form-control">
+            <option value="">Select type…</option>
+            <option value="HARDWARE">Hardware</option>
+            <option value="SOFTWARE">Software</option>
+            <option value="FURNITURE">Furniture</option>
+            <option value="VEHICLE">Vehicle</option>
+            <option value="EQUIPMENT">Equipment</option>
+            <option value="OTHER">Other</option>
+          </select>
+          <span class="invalid-feedback" id="cat-type-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Icon (Emoji)</label>
+          <input type="text" id="cat-icon" class="form-control" placeholder="e.g. 💻" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <input type="color" id="cat-color" class="form-control" value="#6366f1" style="height:42px;padding:.25rem">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Depreciation Rate (%/yr)</label>
+          <input type="number" id="cat-depr" class="form-control" placeholder="e.g. 20" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Useful Life (years)</label>
+          <input type="number" id="cat-life" class="form-control" placeholder="e.g. 5" min="1">
+        </div>
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Description</label>
+          <textarea id="cat-desc" class="form-control" rows="3" placeholder="Category description…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Maintenance Interval (days)</label>
+          <input type="number" id="cat-maint-interval" class="form-control" placeholder="e.g. 180">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Warranty Period (months)</label>
+          <input type="number" id="cat-warranty" class="form-control" placeholder="e.g. 24">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('cat-modal')">Cancel</button>
+      <button class="btn btn-primary" id="cat-save-btn" onclick="saveCategory()">Save Category</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/categories.js"></script>
+</body>
+</html>

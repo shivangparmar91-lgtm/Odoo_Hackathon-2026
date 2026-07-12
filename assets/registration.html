@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Register a new asset with multi-step form, photos, and documents.">
+  <title>Asset Registration – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .step-form { display:none; }
+    .step-form.active { display:block; animation:fadeInUp .35s ease; }
+    .form-section-title {
+      font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+      color:var(--text-muted);margin-bottom:var(--space-5);padding-bottom:var(--space-3);
+      border-bottom:1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>➕</span> Register New Asset</div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up" style="max-width:860px;margin:0 auto">
+        <div class="card-header">
+          <div class="card-title">📝 Asset Registration Form</div>
+          <div style="font-size:.8125rem;color:var(--text-muted)">Step <span id="step-num">1</span> of 4</div>
+        </div>
+        <div class="card-body">
+          <!-- Steps -->
+          <div class="steps" id="reg-steps">
+            <div class="step active" id="step-1-ind">
+              <div class="step-circle">1</div>
+              <div class="step-label">Basic Info</div>
+            </div>
+            <div class="step-line" id="line-1"></div>
+            <div class="step" id="step-2-ind">
+              <div class="step-circle">2</div>
+              <div class="step-label">Purchase Details</div>
+            </div>
+            <div class="step-line" id="line-2"></div>
+            <div class="step" id="step-3-ind">
+              <div class="step-circle">3</div>
+              <div class="step-label">Photos & Docs</div>
+            </div>
+            <div class="step-line" id="line-3"></div>
+            <div class="step" id="step-4-ind">
+              <div class="step-circle">4</div>
+              <div class="step-label">Review</div>
+            </div>
+          </div>
+
+          <!-- Step 1: Basic Info -->
+          <div class="step-form active" id="form-step-1">
+            <div class="form-section-title">Basic Asset Information</div>
+            <div class="form-grid form-grid-2" style="gap:1.25rem">
+              <div class="form-group" style="grid-column:span 2">
+                <label class="form-label">Asset Name <span class="required">*</span></label>
+                <input type="text" id="asset-name" class="form-control" placeholder="e.g. Dell Latitude 7420 Laptop">
+                <span class="invalid-feedback" id="asset-name-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Asset Tag <span class="required">*</span></label>
+                <div style="display:flex;gap:.5rem">
+                  <input type="text" id="asset-tag" class="form-control" placeholder="AF-2025-0001" style="font-family:var(--font-mono)">
+                  <button type="button" class="btn btn-secondary btn-sm" style="white-space:nowrap" onclick="generateTag()">Auto-gen</button>
+                </div>
+                <span class="invalid-feedback" id="asset-tag-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Serial Number</label>
+                <input type="text" id="asset-serial" class="form-control" placeholder="SN-XXXX" style="font-family:var(--font-mono)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category <span class="required">*</span></label>
+                <select id="asset-category" class="form-control">
+                  <option value="">Select Category…</option>
+                </select>
+                <span class="invalid-feedback" id="asset-category-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Brand / Manufacturer</label>
+                <input type="text" id="asset-brand" class="form-control" placeholder="e.g. Dell, HP, Apple">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Model Number</label>
+                <input type="text" id="asset-model" class="form-control" placeholder="e.g. LAT-7420">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Condition <span class="required">*</span></label>
+                <select id="asset-condition" class="form-control">
+                  <option value="NEW">New</option>
+                  <option value="EXCELLENT">Excellent</option>
+                  <option value="GOOD">Good</option>
+                  <option value="FAIR">Fair</option>
+                  <option value="POOR">Poor</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" id="asset-location" class="form-control" placeholder="e.g. IT Store – 3rd Floor">
+              </div>
+              <div class="form-group" style="grid-column:span 2">
+                <label class="form-label">Description</label>
+                <textarea id="asset-desc" class="form-control" rows="3" placeholder="Detailed description of the asset…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Purchase Details -->
+          <div class="step-form" id="form-step-2">
+            <div class="form-section-title">Purchase & Financial Information</div>
+            <div class="form-grid form-grid-2" style="gap:1.25rem">
+              <div class="form-group">
+                <label class="form-label">Purchase Date <span class="required">*</span></label>
+                <input type="date" id="asset-purchase-date" class="form-control">
+                <span class="invalid-feedback" id="asset-purchase-date-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Purchase Cost (₹) <span class="required">*</span></label>
+                <input type="number" id="asset-cost" class="form-control" placeholder="85000" min="0">
+                <span class="invalid-feedback" id="asset-cost-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Depreciation Method</label>
+                <select id="asset-depr-method" class="form-control">
+                  <option value="STRAIGHT_LINE">Straight Line</option>
+                  <option value="DECLINING_BALANCE">Declining Balance</option>
+                  <option value="NONE">None</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Useful Life (years)</label>
+                <input type="number" id="asset-life" class="form-control" placeholder="5" min="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Salvage Value (₹)</label>
+                <input type="number" id="asset-salvage" class="form-control" placeholder="5000" min="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <select id="asset-dept" class="form-control">
+                  <option value="">Select Department…</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Photos & Documents -->
+          <div class="step-form" id="form-step-3">
+            <div class="form-section-title">Asset Photos</div>
+            <div class="upload-zone" id="photo-zone" onclick="document.getElementById('photo-input').click()">
+              <div class="upload-zone-icon">📷</div>
+              <h4>Upload Asset Photos</h4>
+              <p>Drag & drop or <span class="upload-link">browse files</span></p>
+              <p style="font-size:.75rem;margin-top:.25rem">PNG, JPG, WEBP up to 5MB each (max 5 photos)</p>
+            </div>
+            <input type="file" id="photo-input" multiple accept="image/*" style="display:none" onchange="handlePhotos(this)">
+            <div class="upload-preview" id="photo-preview"></div>
+
+            <div class="form-section-title" style="margin-top:1.5rem">Supporting Documents</div>
+            <div class="upload-zone" style="padding:1.5rem" onclick="document.getElementById('doc-input').click()">
+              <div class="upload-zone-icon" style="font-size:32px">📄</div>
+              <h4 style="font-size:.9375rem">Upload Documents</h4>
+              <p>Invoice, warranty card, manual (PDF, DOC)</p>
+            </div>
+            <input type="file" id="doc-input" multiple accept=".pdf,.doc,.docx" style="display:none" onchange="handleDocs(this)">
+            <div id="doc-list" style="margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem"></div>
+
+            <div class="form-section-title" style="margin-top:1.5rem">Additional Notes</div>
+            <div class="form-group">
+              <label class="form-label">Internal Notes</label>
+              <textarea class="form-control" id="asset-notes" rows="3" placeholder="Any internal notes or remarks…"></textarea>
+            </div>
+          </div>
+
+          <!-- Step 4: Review -->
+          <div class="step-form" id="form-step-4">
+            <div class="form-section-title">Review & Confirm</div>
+            <div id="review-content" class="info-grid"></div>
+            <div style="margin-top:1.25rem">
+              <label class="checkbox-wrapper">
+                <input type="checkbox" id="confirm-check">
+                <span style="font-size:.875rem">I confirm that all asset information is accurate and complete.</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="card-footer" style="display:flex;justify-content:space-between;align-items:center">
+          <button class="btn btn-secondary" id="prev-btn" onclick="prevStep()" style="display:none">← Previous</button>
+          <div style="font-size:.875rem;color:var(--text-muted)" id="step-hint">Fill in the asset's basic information</div>
+          <div style="display:flex;gap:.75rem">
+            <button class="btn btn-secondary" onclick="saveDraft()">💾 Save Draft</button>
+            <button class="btn btn-primary" id="next-btn" onclick="nextStep()">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/asset-registration.js"></script>
+</body>
+</html>

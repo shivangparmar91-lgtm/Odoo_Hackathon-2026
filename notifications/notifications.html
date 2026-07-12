@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Notifications.">
+  <title>Notifications – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>🔔</span> Notifications</div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary btn-sm" onclick="Utils.Toast.success('Done', 'All notifications marked as read.')">Mark All as Read</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up" style="max-width:800px;margin:0 auto">
+        <div class="card-body" style="padding:0">
+          <div style="display:flex;flex-direction:column;gap:0">
+            <!-- Notification Item -->
+            <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:flex-start;background:var(--bg-active)">
+              <div style="font-size:1.25rem">🔗</div>
+              <div>
+                <div style="font-weight:600;margin-bottom:.25rem">New Asset Allocated</div>
+                <div style="font-size:.875rem;color:var(--text-secondary)">Dell Latitude (AF-2025-001) has been allocated to you.</div>
+                <div style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem">10 minutes ago</div>
+              </div>
+            </div>
+            
+            <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:flex-start">
+              <div style="font-size:1.25rem">🔧</div>
+              <div>
+                <div style="font-weight:600;margin-bottom:.25rem">Maintenance Updated</div>
+                <div style="font-size:.875rem;color:var(--text-secondary)">Ticket MNT-1002 status changed to Completed.</div>
+                <div style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem">2 hours ago</div>
+              </div>
+            </div>
+            
+            <div style="padding:1rem 1.5rem;display:flex;gap:1rem;align-items:flex-start">
+              <div style="font-size:1.25rem">⚠️</div>
+              <div>
+                <div style="font-weight:600;margin-bottom:.25rem">Overdue Return</div>
+                <div style="font-size:.875rem;color:var(--text-secondary)">Lenovo ThinkPad X1 is overdue for return.</div>
+                <div style="font-size:.75rem;color:var(--text-muted);margin-top:.25rem">1 day ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => { Auth.requireAuth(); });
+</script>
+</body>
+</html>
