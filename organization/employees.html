@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Employee directory with department filtering and asset assignments.">
+  <title>Employee Directory – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+  <style>
+    .emp-card {
+      background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);
+      padding:var(--space-5);transition:all var(--transition-base);
+      display:flex;flex-direction:column;gap:var(--space-3);
+    }
+    .emp-card:hover{border-color:var(--primary);transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+    .emp-card-header{display:flex;align-items:center;gap:var(--space-3);}
+    .emp-info{flex:1;min-width:0;}
+    .emp-name{font-weight:700;font-size:.9375rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .emp-role{font-size:.75rem;color:var(--text-muted);}
+    .emp-stats{display:flex;gap:var(--space-4);}
+    .emp-stat{display:flex;flex-direction:column;gap:2px;flex:1;}
+    .emp-stat-val{font-weight:700;font-size:1.0625rem;}
+    .emp-stat-lbl{font-size:.6875rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;}
+    .emp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-5);}
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>👥</span> Employee Directory</div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary" onclick="exportEmps()">📥 Export</button>
+        <button class="btn btn-primary" onclick="openEmpModal()">＋ Add Employee</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- KPI Row -->
+      <div class="kpi-grid stagger animate-fade-up" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi-card" style="--kpi-color:#6366f1;--kpi-color-light:rgba(99,102,241,0.15)">
+          <div class="kpi-icon">👥</div><div class="kpi-label">Total Employees</div><div class="kpi-value" id="stat-emp-total">—</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#10b981;--kpi-color-light:rgba(16,185,129,0.15)">
+          <div class="kpi-icon">✅</div><div class="kpi-label">Active</div><div class="kpi-value" id="stat-emp-active">—</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#f59e0b;--kpi-color-light:rgba(245,158,11,0.15)">
+          <div class="kpi-icon">🔗</div><div class="kpi-label">With Allocations</div><div class="kpi-value" id="stat-emp-alloc">—</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#38bdf8;--kpi-color-light:rgba(56,189,248,0.15)">
+          <div class="kpi-icon">🏢</div><div class="kpi-label">Departments</div><div class="kpi-value" id="stat-emp-depts">—</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="card" style="padding:var(--space-4) var(--space-6)">
+        <div class="toolbar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="emp-search" class="form-control" placeholder="Search employees…">
+          </div>
+          <select class="select-control" id="dept-filter"><option value="">All Departments</option></select>
+          <select class="select-control" id="role-filter">
+            <option value="">All Roles</option>
+            <option value="ADMIN">Admin</option>
+            <option value="ASSET_MANAGER">Asset Manager</option>
+            <option value="EMPLOYEE">Employee</option>
+            <option value="DEPT_HEAD">Dept Head</option>
+          </select>
+          <select class="select-control" id="status-filter">
+            <option value="">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+          <div class="tabs" style="background:none;border:none;padding:0">
+            <button class="tab-btn active" onclick="switchEmpView('grid')">⊞</button>
+            <button class="tab-btn" onclick="switchEmpView('table')">≡</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid View -->
+      <div id="emp-grid-view">
+        <div class="emp-grid stagger animate-fade-up" id="emp-grid"></div>
+        <div class="pagination" id="emp-grid-pagination" style="margin-top:var(--space-4)"></div>
+      </div>
+
+      <!-- Table View -->
+      <div id="emp-table-view" style="display:none">
+        <div class="card animate-fade-up">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="table-checkbox"><input type="checkbox"></th>
+                  <th>Employee</th><th>Employee ID</th><th>Department</th><th>Role</th>
+                  <th>Assets</th><th>Email</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="emp-tbody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="emp-table-pagination"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add/Edit Employee Modal -->
+<div class="modal-backdrop" id="emp-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title" id="emp-modal-title">👤 Add Employee</div>
+      <button class="modal-close" onclick="Utils.closeModal('emp-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+        <div class="form-group">
+          <label class="form-label">First Name <span class="required">*</span></label>
+          <input type="text" id="emp-first-name" class="form-control" placeholder="First name">
+          <span class="invalid-feedback" id="emp-first-name-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name <span class="required">*</span></label>
+          <input type="text" id="emp-last-name" class="form-control" placeholder="Last name">
+          <span class="invalid-feedback" id="emp-last-name-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email <span class="required">*</span></label>
+          <input type="email" id="emp-email" class="form-control" placeholder="employee@company.com">
+          <span class="invalid-feedback" id="emp-email-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Employee ID <span class="required">*</span></label>
+          <input type="text" id="emp-id-no" class="form-control" placeholder="EMP-0001" style="font-family:var(--font-mono)">
+          <span class="invalid-feedback" id="emp-id-no-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" id="emp-phone" class="form-control" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department <span class="required">*</span></label>
+          <select id="emp-dept" class="form-control">
+            <option value="">Select Department…</option>
+            <option>Information Technology</option><option>Human Resources</option>
+            <option>Finance & Accounts</option><option>Operations</option>
+            <option>Sales & Marketing</option>
+          </select>
+          <span class="invalid-feedback" id="emp-dept-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job Title</label>
+          <input type="text" id="emp-title" class="form-control" placeholder="e.g. Senior Engineer">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role <span class="required">*</span></label>
+          <select id="emp-role" class="form-control">
+            <option value="EMPLOYEE">Employee</option>
+            <option value="DEPT_HEAD">Department Head</option>
+            <option value="ASSET_MANAGER">Asset Manager</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Joining</label>
+          <input type="date" id="emp-doj" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select id="emp-status" class="form-control">
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('emp-modal')">Cancel</button>
+      <button class="btn btn-primary" id="emp-save-btn" onclick="saveEmployee()">Save Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- Employee View Modal -->
+<div class="modal-backdrop" id="emp-view-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">👤 Employee Details</div>
+      <button class="modal-close" onclick="Utils.closeModal('emp-view-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="emp-view-body">Loading…</div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/employees.js"></script>
+</body>
+</html>

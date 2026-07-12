@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Allocate assets to employees.">
+  <title>Asset Allocation – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="sidebar-container"></div>
+    <main class="main-content" id="main-content">
+      <header class="topbar">
+        <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+        <div class="topbar-title"><span>🔗</span> Asset Allocations</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="openAllocModal()">＋ New Allocation</button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Active Allocations Table -->
+        <div class="card animate-fade-up">
+          <div class="card-header">
+            <div class="card-title">🔗 Active Allocations</div>
+            <div class="toolbar">
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="alloc-search" class="form-control" placeholder="Search by asset or employee…">
+              </div>
+              <select class="select-control" id="status-filter">
+                <option value="">All Statuses</option>
+                <option value="ACTIVE">Active</option>
+                <option value="RETURNED">Returned</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="table" id="alloc-table">
+              <thead>
+                <tr>
+                  <th>Asset Tag</th>
+                  <th>Asset Name</th>
+                  <th>Assigned To</th>
+                  <th>Assigned Date</th>
+                  <th>Expected Return</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="alloc-tbody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="alloc-pagination"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- New Allocation Modal -->
+  <div class="modal-backdrop" id="alloc-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">🔗 New Allocation</div>
+        <button class="modal-close" onclick="Utils.closeModal('alloc-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Employee <span class="required">*</span></label>
+            <select id="alloc-emp" class="form-control">
+              <option value="">Select Employee...</option>
+              <option value="1">Alice Johnson</option>
+              <option value="2">Bob Smith</option>
+            </select>
+            <span class="invalid-feedback" id="alloc-emp-error"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Asset <span class="required">*</span></label>
+            <select id="alloc-asset" class="form-control">
+              <option value="">Select Available Asset...</option>
+              <option value="2">AF-2025-002 - MacBook Pro M3</option>
+              <option value="8">AF-2025-008 - iPad Air</option>
+            </select>
+            <span class="invalid-feedback" id="alloc-asset-error"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expected Return Date</label>
+            <input type="date" id="alloc-return-date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Allocation Notes</label>
+            <textarea id="alloc-notes" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="Utils.closeModal('alloc-modal')">Cancel</button>
+        <button class="btn btn-primary" id="alloc-save-btn" onclick="saveAllocation()">Allocate</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/allocation.js"></script>
+</body>
+
+</html>

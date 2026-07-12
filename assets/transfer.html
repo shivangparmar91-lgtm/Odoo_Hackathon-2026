@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Manage asset transfer requests and approvals.">
+  <title>Asset Transfer – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>↔️</span> Asset Transfers</div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openTransferModal()">＋ Request Transfer</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- Transfers Table -->
+      <div class="card animate-fade-up">
+        <div class="card-header">
+          <div class="card-title">↔️ Transfer Requests</div>
+          <div class="toolbar">
+            <select class="select-control" id="status-filter">
+              <option value="">All Statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="table" id="transfer-table">
+            <thead>
+              <tr>
+                <th>Req ID</th>
+                <th>Asset</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Requested On</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="transfer-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Request Transfer Modal -->
+<div class="modal-backdrop" id="transfer-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">↔️ Request Transfer</div>
+      <button class="modal-close" onclick="Utils.closeModal('transfer-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Asset to Transfer <span class="required">*</span></label>
+          <select id="transfer-asset" class="form-control">
+            <option value="">Select Asset...</option>
+            <option value="1">AF-2025-001 - Dell Latitude</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Transfer To (Employee / Dept) <span class="required">*</span></label>
+          <select id="transfer-to" class="form-control">
+            <option value="">Select Recipient...</option>
+            <option value="2">Bob Smith (HR)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason for Transfer</label>
+          <textarea id="transfer-reason" class="form-control" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('transfer-modal')">Cancel</button>
+      <button class="btn btn-primary" id="transfer-save-btn" onclick="saveTransfer()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/transfer.js"></script>
+</body>
+</html>
