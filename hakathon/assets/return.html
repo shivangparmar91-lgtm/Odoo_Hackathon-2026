@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Asset Return Processing.">
+  <title>Asset Return – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>↩️</span> Return Asset</div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up" style="max-width:600px;margin:0 auto">
+        <div class="card-header">
+          <div class="card-title">Process Return</div>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Asset to Return (Scan or Search) <span class="required">*</span></label>
+              <input type="text" id="return-asset-search" class="form-control" placeholder="e.g. AF-2025-001">
+            </div>
+            
+            <div id="asset-info" class="info-grid" style="display:none;background:var(--bg-elevated);padding:1rem;border-radius:var(--radius-md)">
+              <div class="info-item"><div class="info-label">Current Assignee</div><div class="info-value" id="ret-assignee">Alice Johnson</div></div>
+              <div class="info-item"><div class="info-label">Asset Name</div><div class="info-value" id="ret-name">Dell Latitude</div></div>
+            </div>
+
+            <div class="form-group" style="margin-top:1rem">
+              <label class="form-label">Return Condition <span class="required">*</span></label>
+              <select id="return-condition" class="form-control">
+                <option value="GOOD">Good / Working</option>
+                <option value="FAIR">Fair (Minor Wear)</option>
+                <option value="DAMAGED">Damaged / Broken</option>
+                <option value="LOST">Lost</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Return Notes</label>
+              <textarea id="return-notes" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer" style="display:flex;justify-content:flex-end;gap:1rem">
+          <button class="btn btn-secondary" onclick="window.history.back()">Cancel</button>
+          <button class="btn btn-primary" id="return-btn" onclick="processReturn()">Confirm Return</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/return.js"></script>
+</body>
+</html>

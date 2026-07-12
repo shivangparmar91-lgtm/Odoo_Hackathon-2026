@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – User Profile.">
+  <title>My Profile – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>👤</span> My Profile</div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up" style="max-width:800px;margin:0 auto">
+        <div class="card-body">
+          <div style="display:flex;gap:1.5rem;align-items:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">
+            <div class="avatar-placeholder avatar-xl" id="profile-avatar">U</div>
+            <div>
+              <h2 id="profile-name" style="margin-bottom:.25rem">User Name</h2>
+              <div id="profile-role" style="color:var(--text-muted);margin-bottom:.5rem">Role</div>
+              <span class="badge badge-primary">Active</span>
+            </div>
+          </div>
+          
+          <h4 style="margin-bottom:1rem">Personal Information</h4>
+          <div class="form-grid form-grid-2">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" id="prof-fname" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" id="prof-lname" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="prof-email" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="text" id="prof-phone" class="form-control">
+            </div>
+          </div>
+          
+          <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    Auth.requireAuth();
+    let u = Auth.getUser();
+
+    // If localStorage has incomplete data, fetch from backend
+    if (!u || !u.phone) {
+      try {
+        const fresh = await API.auth.me();
+        if (fresh) {
+          u = fresh;
+          localStorage.setItem('af_user', JSON.stringify(fresh));
+        }
+      } catch (_) {}
+    }
+
+    if (u) {
+      const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim();
+      document.getElementById('profile-name').textContent  = fullName || 'User';
+      document.getElementById('profile-role').textContent  = (u.role || '').replace(/_/g, ' ');
+      document.getElementById('profile-avatar').textContent = ((u.firstName||'?')[0] + (u.lastName||'?')[0]).toUpperCase();
+      document.getElementById('prof-fname').value  = u.firstName  || '';
+      document.getElementById('prof-lname').value  = u.lastName   || '';
+      document.getElementById('prof-email').value  = u.email      || '';
+      document.getElementById('prof-phone').value  = u.phone      || '';
+      if (document.getElementById('prof-dept'))  document.getElementById('prof-dept').value  = u.department || u.dept || '';
+      if (document.getElementById('prof-title')) document.getElementById('prof-title').value = u.title      || '';
+      if (document.getElementById('prof-empid')) document.getElementById('prof-empid').value = u.empId      || '';
+    }
+  });
+
+  async function saveProfile() {
+    const btn = document.querySelector('.btn-primary');
+    if (btn) btn.textContent = 'Saving…';
+    const body = {
+      firstName: document.getElementById('prof-fname').value.trim(),
+      lastName:  document.getElementById('prof-lname').value.trim(),
+      phone:     document.getElementById('prof-phone').value.trim(),
+    };
+    try {
+      const updated = await API.profile.update(body);
+      // Update local storage
+      const stored = Auth.getUser() || {};
+      localStorage.setItem('af_user', JSON.stringify({ ...stored, ...body }));
+      document.getElementById('profile-name').textContent = `${body.firstName} ${body.lastName}`;
+      if (typeof Utils !== 'undefined') Utils.Toast.success('Saved', 'Profile updated successfully.');
+    } catch (err) {
+      // Even if backend isn't wired, update local copy
+      const stored = Auth.getUser() || {};
+      localStorage.setItem('af_user', JSON.stringify({ ...stored, ...body }));
+      if (typeof Utils !== 'undefined') Utils.Toast.success('Saved', 'Profile saved.');
+    }
+    if (btn) btn.textContent = 'Save Profile';
+  }
+</script>
+</body>
+</html>

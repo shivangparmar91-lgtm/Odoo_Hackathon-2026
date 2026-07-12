@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Asset Auditing.">
+  <title>Audit Cycles – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>🔍</span> Audit Cycles</div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openAuditModal()">＋ New Audit Cycle</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up">
+        <div class="card-header">
+          <div class="card-title">🔍 Audit Cycles</div>
+        </div>
+        <div class="table-container">
+          <table class="table" id="audit-table">
+            <thead>
+              <tr>
+                <th>Audit Name</th>
+                <th>Department / Scope</th>
+                <th>Auditor</th>
+                <th>Start Date</th>
+                <th>Progress</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- New Audit Modal -->
+<div class="modal-backdrop" id="audit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🔍 New Audit Cycle</div>
+      <button class="modal-close" onclick="Utils.closeModal('audit-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Audit Name <span class="required">*</span></label>
+          <input type="text" id="audit-name" class="form-control" placeholder="e.g. Q3 IT Asset Audit">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Scope (Department) <span class="required">*</span></label>
+          <select id="audit-dept" class="form-control">
+            <option value="ALL">All Departments</option>
+            <option value="IT">Information Technology</option>
+            <option value="HR">Human Resources</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assigned Auditor <span class="required">*</span></label>
+          <select id="audit-auditor" class="form-control">
+            <option value="1">Alice Johnson</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('audit-modal')">Cancel</button>
+      <button class="btn btn-primary" id="audit-save-btn" onclick="saveAudit()">Start Audit</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/audit.js"></script>
+</body>
+</html>

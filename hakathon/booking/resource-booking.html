@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Book shared resources and facilities.">
+  <title>Resource Booking – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="sidebar-container"></div>
+    <main class="main-content" id="main-content">
+      <header class="topbar">
+        <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+        <div class="topbar-title"><span>📅</span> Resource Bookings</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="openBookModal()">＋ Book Resource</button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Bookings Table -->
+        <div class="card animate-fade-up">
+          <div class="card-header">
+            <div class="card-title">📅 Upcoming Bookings</div>
+          </div>
+          <div class="table-container">
+            <table class="table" id="booking-table">
+              <thead>
+                <tr>
+                  <th>Resource</th>
+                  <th>Booked By</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Purpose</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="booking-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Book Resource Modal -->
+  <div class="modal-backdrop" id="book-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">📅 Book a Resource</div>
+        <button class="modal-close" onclick="Utils.closeModal('book-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Resource / Asset <span class="required">*</span></label>
+            <select id="book-resource" class="form-control">
+              <option value="">Click "Book Resource" to load assets…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Start Date & Time <span class="required">*</span></label>
+            <input type="datetime-local" id="book-start" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date & Time <span class="required">*</span></label>
+            <input type="datetime-local" id="book-end" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Purpose <span class="required">*</span></label>
+            <input type="text" id="book-purpose" class="form-control" placeholder="e.g. Client Meeting">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="Utils.closeModal('book-modal')">Cancel</button>
+        <button class="btn btn-primary" id="book-save-btn" onclick="saveBooking()">Book</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/booking.js"></script>
+</body>
+
+</html>

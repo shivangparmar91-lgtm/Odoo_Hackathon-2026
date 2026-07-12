@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – System Settings">
+  <title>Settings – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>⚙️</span> System Settings</div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up">
+        <div class="card-header" style="padding:0;border-bottom:1px solid var(--border)">
+          <div class="tabs" style="padding:var(--space-4) var(--space-6);background:none;border:none">
+            <button class="tab-btn active" data-tab-group="settings" data-tab="general">General</button>
+            <button class="tab-btn" data-tab-group="settings" data-tab="security">Security & Roles</button>
+            <button class="tab-btn" data-tab-group="settings" data-tab="notifications">Notifications</button>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <!-- General Tab -->
+          <div class="tab-content active" data-tab-group="settings" data-tab="general">
+            <h4 style="margin-bottom:1rem">Company Information</h4>
+            <div class="form-grid form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Company Name</label>
+                <input type="text" class="form-control" value="Acme Corporation">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Support Email</label>
+                <input type="email" class="form-control" value="support@acme.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Currency Format</label>
+                <select class="form-control"><option>INR (₹)</option><option>USD ($)</option></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-control"><option>Asia/Kolkata (IST)</option></select>
+              </div>
+            </div>
+            <div style="margin-top:1.5rem">
+              <button class="btn btn-primary" onclick="Utils.Toast.success('Saved', 'General settings saved.')">Save Changes</button>
+            </div>
+          </div>
+          
+          <!-- Security Tab -->
+          <div class="tab-content" data-tab-group="settings" data-tab="security">
+            <h4 style="margin-bottom:1rem">Password Policy</h4>
+            <div class="form-group" style="max-width:300px">
+              <label class="form-label">Minimum Length</label>
+              <input type="number" class="form-control" value="8">
+            </div>
+            <div class="form-group" style="margin-top:1rem">
+              <label class="checkbox-wrapper">
+                <input type="checkbox" checked> <span>Require Special Characters</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="checkbox-wrapper">
+                <input type="checkbox" checked> <span>Require Numbers</span>
+              </label>
+            </div>
+            <div style="margin-top:1.5rem">
+              <button class="btn btn-primary" onclick="Utils.Toast.success('Saved', 'Security settings saved.')">Save Changes</button>
+            </div>
+          </div>
+          
+          <!-- Notifications Tab -->
+          <div class="tab-content" data-tab-group="settings" data-tab="notifications">
+            <h4 style="margin-bottom:1rem">Email Alerts</h4>
+            <div class="form-group"><label class="checkbox-wrapper"><input type="checkbox" checked> <span>Asset Allocation Emails</span></label></div>
+            <div class="form-group"><label class="checkbox-wrapper"><input type="checkbox" checked> <span>Maintenance Updates</span></label></div>
+            <div class="form-group"><label class="checkbox-wrapper"><input type="checkbox" checked> <span>Audit Cycle Reminders</span></label></div>
+            <div style="margin-top:1.5rem">
+              <button class="btn btn-primary" onclick="Utils.Toast.success('Saved', 'Notification preferences saved.')">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Auth.requireAuth();
+    Utils.setupTabs();
+  });
+</script>
+</body>
+</html>

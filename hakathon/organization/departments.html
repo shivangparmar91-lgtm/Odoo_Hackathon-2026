@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Manage departments, assign heads, and organize your company structure.">
+  <title>Departments – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>🏢</span> Department Management</div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openDeptModal()">＋ Add Department</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- Stats -->
+      <div class="kpi-grid stagger animate-fade-up" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi-card" style="--kpi-color:#6366f1;--kpi-color-light:rgba(99,102,241,0.15)">
+          <div class="kpi-icon">🏢</div><div class="kpi-label">Total Departments</div>
+          <div class="kpi-value" id="stat-total">—</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#10b981;--kpi-color-light:rgba(16,185,129,0.15)">
+          <div class="kpi-icon">✅</div><div class="kpi-label">Active</div>
+          <div class="kpi-value" id="stat-active">—</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#f59e0b;--kpi-color-light:rgba(245,158,11,0.15)">
+          <div class="kpi-icon">👥</div><div class="kpi-label">Total Employees</div>
+          <div class="kpi-value" id="stat-employees">—</div>
+        </div>
+        <div class="kpi-card" style="--kpi-color:#38bdf8;--kpi-color-light:rgba(56,189,248,0.15)">
+          <div class="kpi-icon">📦</div><div class="kpi-label">Total Assets</div>
+          <div class="kpi-value" id="stat-assets">—</div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="card animate-fade-up">
+        <div class="card-header">
+          <div class="card-title">🏢 All Departments</div>
+          <div class="toolbar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-input" class="form-control" placeholder="Search departments…">
+            </div>
+            <select class="select-control" id="status-filter">
+              <option value="">All Status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="exportTable()">📥 Export</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table" id="dept-table">
+            <thead>
+              <tr>
+                <th class="table-checkbox"><input type="checkbox" id="select-all"></th>
+                <th class="sortable" data-col="name">Department Name ↕</th>
+                <th>Department Head</th>
+                <th>Employees</th>
+                <th>Assets</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dept-tbody">
+              <!-- Skeleton -->
+              <tr><td colspan="8"><div style="padding:2rem;text-align:center"><div class="spinner spinner-lg" style="margin:0 auto"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  <!-- Modals used to be here, now they are correctly inside main-content -->
+
+<!-- Add/Edit Department Modal -->
+<div class="modal-backdrop" id="dept-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="dept-modal-title">🏢 Add Department</div>
+      <button class="modal-close" onclick="Utils.closeModal('dept-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid form-grid-2" style="gap:1.25rem">
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Department Name <span class="required">*</span></label>
+          <input type="text" id="dept-name" class="form-control" placeholder="e.g. Information Technology">
+          <span class="invalid-feedback" id="dept-name-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department Code <span class="required">*</span></label>
+          <input type="text" id="dept-code" class="form-control" placeholder="e.g. IT-001" style="font-family:var(--font-mono)">
+          <span class="invalid-feedback" id="dept-code-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department Head</label>
+          <select id="dept-head" class="form-control">
+            <option value="">Select Employee…</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location / Floor</label>
+          <input type="text" id="dept-location" class="form-control" placeholder="e.g. 3rd Floor, Block B">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cost Center</label>
+          <input type="text" id="dept-cost-center" class="form-control" placeholder="e.g. CC-2025-IT">
+        </div>
+        <div class="form-group" style="grid-column:span 2">
+          <label class="form-label">Description</label>
+          <textarea id="dept-description" class="form-control" rows="3" placeholder="Brief description of this department…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select id="dept-status" class="form-control">
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Utils.closeModal('dept-modal')">Cancel</button>
+      <button class="btn btn-primary" id="dept-save-btn" onclick="saveDepartment()">Save Department</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Department Modal -->
+<div class="modal-backdrop" id="dept-view-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">🏢 Department Details</div>
+      <button class="modal-close" onclick="Utils.closeModal('dept-view-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="dept-view-body">Loading…</div>
+  </div>
+</div>
+  </main>
+</div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script src="../js/departments.js"></script>
+</body>
+</html>
