@@ -32,3 +32,4 @@ Since this project uses plain HTML/JS/CSS, there is no build step required.
 ## 🤝 Contributing
 
 This project was initially developed during the Odoo Hackathon. Feel free to fork, open issues, and submit pull requests.
+ 
