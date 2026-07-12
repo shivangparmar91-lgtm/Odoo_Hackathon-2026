@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – User Profile.">
+  <title>My Profile – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+<body>
+<div class="app-shell">
+  <div id="sidebar-container"></div>
+  <main class="main-content" id="main-content">
+    <header class="topbar">
+      <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+      <div class="topbar-title"><span>👤</span> My Profile</div>
+    </header>
+
+    <div class="page-body">
+      <div class="card animate-fade-up" style="max-width:800px;margin:0 auto">
+        <div class="card-body">
+          <div style="display:flex;gap:1.5rem;align-items:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">
+            <div class="avatar-placeholder avatar-xl" id="profile-avatar">U</div>
+            <div>
+              <h2 id="profile-name" style="margin-bottom:.25rem">User Name</h2>
+              <div id="profile-role" style="color:var(--text-muted);margin-bottom:.5rem">Role</div>
+              <span class="badge badge-primary">Active</span>
+            </div>
+          </div>
+          
+          <h4 style="margin-bottom:1rem">Personal Information</h4>
+          <div class="form-grid form-grid-2">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" id="prof-fname" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" id="prof-lname" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" id="prof-email" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="text" id="prof-phone" class="form-control">
+            </div>
+          </div>
+          
+          <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="Utils.Toast.success('Saved', 'Profile updated successfully.')">Save Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Auth.requireAuth();
+    const u = Auth.getUser();
+    if(u) {
+      document.getElementById('profile-name').textContent = `${u.firstName} ${u.lastName}`;
+      document.getElementById('profile-role').textContent = u.role.replace('_', ' ');
+      document.getElementById('profile-avatar').textContent = Utils.Format.initials(`${u.firstName} ${u.lastName}`);
+      document.getElementById('prof-fname').value = u.firstName;
+      document.getElementById('prof-lname').value = u.lastName;
+      document.getElementById('prof-email').value = u.email;
+    }
+  });
+</script>
+</body>
+</html>

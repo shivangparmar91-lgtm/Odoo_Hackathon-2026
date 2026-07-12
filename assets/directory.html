@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="AssetFlow – Central asset directory with advanced search, filtering, and bulk actions.">
+  <title>Asset Directory – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="sidebar-container"></div>
+    <main class="main-content" id="main-content">
+      <header class="topbar">
+        <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+        <div class="topbar-title"><span>📋</span> Asset Directory</div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="exportAssets()">📥 Export</button>
+          <a class="btn btn-primary" href="registration.html">➕ Register Asset</a>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Toolbar -->
+        <div class="card" style="padding:var(--space-4) var(--space-6)">
+          <div class="toolbar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="asset-search" class="form-control" placeholder="Search by name, tag, or serial…">
+            </div>
+            <select class="select-control" id="category-filter">
+              <option value="">All Categories</option>
+            </select>
+            <select class="select-control" id="status-filter">
+              <option value="">All Statuses</option>
+              <option value="AVAILABLE">Available</option>
+              <option value="ALLOCATED">Allocated</option>
+              <option value="IN_MAINTENANCE">In Maintenance</option>
+              <option value="RETIRED">Retired</option>
+            </select>
+            <select class="select-control" id="dept-filter">
+              <option value="">All Departments</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bulk Actions Bar (Hidden by default) -->
+        <div id="bulk-actions" class="card"
+          style="display:none;padding:var(--space-3) var(--space-6);background:var(--bg-active);border-color:var(--primary);align-items:center;justify-content:space-between">
+          <div style="font-size:var(--text-sm);font-weight:600;color:var(--primary-light)">
+            <span id="selected-count">0</span> assets selected
+          </div>
+          <div style="display:flex;gap:var(--space-3)">
+            <button class="btn btn-secondary btn-sm" onclick="bulkAllocate()">🔗 Allocate</button>
+            <button class="btn btn-secondary btn-sm" onclick="bulkMaintenance()">🔧 Maintenance</button>
+            <button class="btn btn-danger btn-sm" onclick="bulkRetire()">🗑️ Retire</button>
+          </div>
+        </div>
+
+        <!-- Assets Table -->
+        <div class="card animate-fade-up">
+          <div class="table-container">
+            <table class="table" id="asset-table">
+              <thead>
+                <tr>
+                  <th class="table-checkbox"><input type="checkbox" id="select-all"></th>
+                  <th class="sortable" data-sort="tag">Asset Tag ↕</th>
+                  <th class="sortable" data-sort="name">Asset Name ↕</th>
+                  <th>Category</th>
+                  <th>Condition</th>
+                  <th>Assigned To / Location</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="asset-tbody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="asset-pagination"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Quick Action Modal -->
+  <div class="modal-backdrop" id="quick-action-modal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <div class="modal-title" id="qa-title">Quick Action</div>
+        <button class="modal-close" onclick="Utils.closeModal('quick-action-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="qa-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="Utils.closeModal('quick-action-modal')">Cancel</button>
+        <button class="btn btn-primary" id="qa-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/asset-directory.js"></script>
+</body>
+
+</html>

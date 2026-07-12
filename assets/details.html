@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AssetFlow – Comprehensive details, timeline, and documents for a specific asset.">
+  <title>Asset Details – AssetFlow ERP</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/animations.css">
+</head>
+
+<body>
+  <div class="app-shell">
+    <div id="sidebar-container"></div>
+    <main class="main-content" id="main-content">
+      <header class="topbar">
+        <button class="topbar-mobile-toggle" id="mobile-menu-toggle">☰</button>
+        <div class="topbar-title">
+          <a href="directory.html" style="color:var(--text-muted);text-decoration:none">Assets</a>
+          <span style="color:var(--text-muted);margin:0 8px">/</span>
+          <span id="header-tag">Loading...</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+          <button class="btn btn-primary" onclick="AssetDetails.openEdit()">✏️ Edit Asset</button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Main Overview Card -->
+        <div class="card animate-fade-up">
+          <div class="card-body" style="padding:var(--space-6)">
+            <div style="display:flex;gap:var(--space-6);align-items:flex-start;flex-wrap:wrap">
+              <div
+                style="width:160px;height:160px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);flex-shrink:0;background:var(--bg-elevated) url('data:image/svg+xml;utf8,<svg xmlns=\"
+                http://www.w3.org/2000/svg\" width=\"64\" height=\"64\" fill=\"%2364748b\" viewBox=\"0 0 24 24\">
+                <path d=\"M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5
+                  3.01L14.5 12l4.5 6H5l3.5-4.5z\" /></svg>') center/40% no-repeat;" id="asset-photo">
+              </div>
+              <div style="flex:1;min-width:300px">
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem">
+                  <h1 style="font-size:1.75rem;font-weight:800;color:var(--text-primary)" id="asset-name">Loading...
+                  </h1>
+                  <span id="asset-status-badge"></span>
+                </div>
+                <div style="font-size:1rem;color:var(--text-secondary);margin-bottom:1.5rem" id="asset-cat"></div>
+
+                <div class="info-grid">
+                  <div class="info-item">
+                    <div class="info-label">Asset Tag</div>
+                    <div class="info-value font-mono" id="val-tag">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Serial Number</div>
+                    <div class="info-value font-mono" id="val-serial">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Brand / Model</div>
+                    <div class="info-value" id="val-brand">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Current Location</div>
+                    <div class="info-value" id="val-loc">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Assigned To</div>
+                    <div class="info-value" id="val-assignee">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Condition</div>
+                    <div class="info-value" id="val-cond">—</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="qr-badge" style="align-self:stretch;justify-content:center">
+                <div class="qr-placeholder" id="qr-code"></div>
+                <div class="qr-label" id="qr-tag">AF-XXXX</div>
+                <button class="btn btn-ghost btn-sm btn-full">Print QR</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Tabs -->
+        <div class="card animate-fade-up stagger">
+          <div class="card-header" style="padding:0;border-bottom:1px solid var(--border)">
+            <div class="tabs" style="padding:var(--space-4) var(--space-6);background:none;border:none">
+              <button class="tab-btn active" data-tab-group="asset" data-tab="financial">Financial & Warranty</button>
+              <button class="tab-btn" data-tab-group="asset" data-tab="timeline">Lifecycle Timeline</button>
+              <button class="tab-btn" data-tab-group="asset" data-tab="maintenance">Maintenance History</button>
+              <button class="tab-btn" data-tab-group="asset" data-tab="docs">Documents</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Financial Tab -->
+            <div class="tab-content active animate-fade-in" data-tab-group="asset" data-tab="financial">
+              <div class="detail-section">
+                <div class="form-grid form-grid-3">
+                  <div class="info-item">
+                    <div class="info-label">Purchase Date</div>
+                    <div class="info-value" id="val-pur-date">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Purchase Cost</div>
+                    <div class="info-value" id="val-cost"
+                      style="font-size:1.125rem;font-weight:700;color:var(--text-primary)">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Current Value (Est.)</div>
+                    <div class="info-value" id="val-cur-cost"
+                      style="font-size:1.125rem;font-weight:700;color:var(--success)">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Vendor</div>
+                    <div class="info-value" id="val-vendor">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Invoice Number</div>
+                    <div class="info-value font-mono" id="val-inv">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Department</div>
+                    <div class="info-value" id="val-dept">—</div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="form-grid form-grid-3">
+                  <div class="info-item">
+                    <div class="info-label">Warranty Status</div>
+                    <div class="info-value" id="val-war-stat">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Warranty End Date</div>
+                    <div class="info-value" id="val-war-end">—</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">Useful Life</div>
+                    <div class="info-value" id="val-life">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timeline Tab -->
+            <div class="tab-content animate-fade-in" data-tab-group="asset" data-tab="timeline">
+              <div class="timeline" id="asset-timeline">
+                <div class="skeleton-text" style="width:300px;margin-bottom:1rem"></div>
+                <div class="skeleton-text" style="width:250px"></div>
+              </div>
+            </div>
+
+            <!-- Maintenance Tab -->
+            <div class="tab-content animate-fade-in" data-tab-group="asset" data-tab="maintenance">
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Reported By</th>
+                      <th>Cost</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="maint-tbody">
+                    <tr>
+                      <td colspan="5" style="text-align:center;color:var(--text-muted)">No maintenance records found.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div style="margin-top:1rem"><button class="btn btn-secondary">Report Issue</button></div>
+            </div>
+
+            <!-- Docs Tab -->
+            <div class="tab-content animate-fade-in" data-tab-group="asset" data-tab="docs">
+              <div style="display:flex;gap:1rem;flex-wrap:wrap" id="doc-grid">
+                <div
+                  style="width:200px;padding:1.5rem;border:1px solid var(--border);border-radius:var(--radius-lg);text-align:center;background:var(--bg-elevated)">
+                  <div style="font-size:32px;margin-bottom:.5rem">📄</div>
+                  <div style="font-size:.875rem;font-weight:600;margin-bottom:.25rem">Invoice.pdf</div>
+                  <button class="btn btn-ghost btn-sm btn-full">Download</button>
+                </div>
+              </div>
+              <div style="margin-top:1.5rem"><button class="btn btn-secondary">Upload Document</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/asset-details.js"></script>
+</body>
+
+</html>

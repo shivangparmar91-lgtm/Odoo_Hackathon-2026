@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="AssetFlow ERP – Enterprise Asset & Resource Management System. Sign in to manage your organization's assets.">
+  <title>Login – AssetFlow ERP</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--bg-base);
+    }
+
+    /* Background Grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* Glow orbs */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: -200px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .auth-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Left Panel */
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #1e293b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .auth-left-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 440px;
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+
+    .auth-brand-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
+    }
+
+    .auth-brand-name {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+
+    .auth-brand-name span {
+      color: #818cf8;
+    }
+
+    .auth-hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .auth-hero-title span {
+      color: #818cf8;
+    }
+
+    .auth-hero-desc {
+      font-size: 1.0625rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .auth-features {
+      display: flex;
+      flex-direction: column;
+      gap: .875rem;
+      text-align: left;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: .875rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: .875rem 1.25rem;
+      font-size: .9375rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+    }
+
+    .auth-feature-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    /* Right Panel */
+    .auth-right {
+      width: 480px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--bg-base);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .login-header h1 {
+      font-size: 1.875rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: .375rem;
+    }
+
+    .login-header p {
+      font-size: .9375rem;
+      color: var(--text-muted);
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: .875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--text-muted);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .input-group .form-control {
+      padding-left: 2.75rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: .875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: .25rem;
+      z-index: 1;
+      transition: color var(--transition-fast);
+    }
+
+    .password-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    .input-group .form-control.has-toggle {
+      padding-right: 2.75rem;
+    }
+
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .login-options a {
+      font-size: .875rem;
+      color: var(--primary-light);
+      font-weight: 500;
+    }
+
+    .login-options a:hover {
+      color: var(--primary);
+    }
+
+    .divider-or {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: .5rem 0;
+      color: var(--text-muted);
+      font-size: .875rem;
+    }
+
+    .divider-or::before,
+    .divider-or::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: .875rem;
+      color: var(--text-muted);
+    }
+
+    .login-footer a {
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
+    @media (max-width: 1024px) {
+      .auth-left {
+        display: none;
+      }
+
+      .auth-right {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-right {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="auth-wrapper">
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="auth-left-content animate-fade-up">
+        <div class="auth-brand">
+          <div class="auth-brand-logo">⚡</div>
+          <div class="auth-brand-name">Asset<span>Flow</span></div>
+        </div>
+
+        <h1 class="auth-hero-title">
+          Enterprise Asset<br><span>Management</span><br>Simplified
+        </h1>
+        <p class="auth-hero-desc">
+          One platform to track, manage, and optimize every asset across your organization. Built for scale, designed
+          for clarity.
+        </p>
+
+        <div class="auth-features stagger animate-fade-up">
+          <div class="auth-feature">
+            <span class="auth-feature-icon">📦</span>
+            <span>Complete Asset Lifecycle Tracking</span>
+          </div>
+          <div class="auth-feature">
+            <span class="auth-feature-icon">🔧</span>
+            <span>Maintenance & Audit Workflows</span>
+          </div>
+          <div class="auth-feature">
+            <span class="auth-feature-icon">📊</span>
+            <span>Real-time Dashboard & Reports</span>
+          </div>
+          <div class="auth-feature">
+            <span class="auth-feature-icon">🔔</span>
+            <span>Smart Notifications & Alerts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="auth-right">
+      <div class="login-card animate-fade-up">
+        <div class="login-header">
+          <h1>Welcome Back 👋</h1>
+          <p>Sign in to your AssetFlow account</p>
+        </div>
+
+        <form class="login-form" id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+            <div class="input-group">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="email" class="form-control" placeholder="you@company.com" autocomplete="email"
+                required>
+            </div>
+            <span class="invalid-feedback" id="email-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password <span class="required">*</span></label>
+            <div class="input-group">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="password" class="form-control has-toggle" placeholder="Enter your password"
+                autocomplete="current-password" required>
+              <button type="button" class="password-toggle" id="pwd-toggle" title="Show/hide password">👁️</button>
+            </div>
+            <span class="invalid-feedback" id="password-error"></span>
+          </div>
+
+          <div class="login-options">
+            <label class="checkbox-wrapper">
+              <input type="checkbox" id="remember-me">
+              <span style="font-size:.875rem;color:var(--text-secondary)">Remember me</span>
+            </label>
+            <a href="forgot-password.html">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-btn">
+            <span>Sign In</span>
+          </button>
+
+          <div class="divider-or">or continue as demo</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+            <button type="button" class="btn btn-secondary" onclick="loginAsDemo('ADMIN')">
+              👑 Admin Demo
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="loginAsDemo('EMPLOYEE')">
+              👤 Employee Demo
+            </button>
+          </div>
+        </form>
+
+        <div class="login-footer">
+          Don't have an account? <a href="#">Contact your administrator</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    // Redirect if already logged in
+    if (Auth.isLoggedIn() && !Auth.isTokenExpired()) {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Password toggle
+    document.getElementById('pwd-toggle').addEventListener('click', function () {
+      const input = document.getElementById('password');
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      this.textContent = isPassword ? '🙈' : '👁️';
+    });
+
+    // Form submit
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const isValid = Utils.validateForm({
+        email: { required: true, email: true },
+        password: { required: true, minLength: 4 },
+      });
+      if (!isValid) return;
+
+      const btn = document.getElementById('login-btn');
+      Utils.setButtonLoading(btn, true);
+
+      try {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember-me').checked;
+
+        await Auth.login(email, password);
+
+        if (remember) {
+          localStorage.setItem('af_remember_email', email);
+        }
+
+        Utils.Toast.success('Welcome back!', 'Redirecting to dashboard…');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+
+      } catch (err) {
+        Utils.Toast.error('Login Failed', err.message || 'Invalid credentials. Please try again.');
+        Utils.setButtonLoading(btn, false);
+        document.getElementById('password').classList.add('is-invalid');
+      }
+    });
+
+    // Prefill remembered email
+    const rememberedEmail = localStorage.getItem('af_remember_email');
+    if (rememberedEmail) {
+      document.getElementById('email').value = rememberedEmail;
+      document.getElementById('remember-me').checked = true;
+    }
+
+    // Demo login
+    function loginAsDemo(role) {
+      const demoUsers = {
+        ADMIN: { email: 'admin@assetflow.io', password: 'Admin@123' },
+        EMPLOYEE: { email: 'emp@assetflow.io', password: 'Emp@1234' },
+      };
+      const creds = demoUsers[role];
+      document.getElementById('email').value = creds.email;
+      document.getElementById('password').value = creds.password;
+
+      // Simulate login for demo (mock valid-looking JWT token)
+      const mockPayload = btoa(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 }));
+      Auth.setToken('demo.' + mockPayload + '.signature');
+      Auth.setUser({
+        id: 1, firstName: role === 'ADMIN' ? 'Admin' : 'John',
+        lastName: 'Demo', email: creds.email, role
+      });
+
+      Utils.Toast.success('Demo Mode', `Logged in as ${role}`);
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
+    }
+  </script>
+</body>
+
+</html>
