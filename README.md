@@ -35,8 +35,3 @@ AssetFlow is a modern, comprehensive Enterprise Asset & Resource Management Syst
    ./mvnw spring-boot:run
    ```
    *The server will start on `http://localhost:8080`.*
-
-## 🔑 Default Accounts (Data Seeder)
-If starting with an empty database, the following accounts will be generated automatically:
-- **Admin:** `admin@assetflow.com` / `Admin@123`
-- **Employee:** `emp@assetflow.com` / `Emp@123`
